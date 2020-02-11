@@ -1,0 +1,16 @@
+{
+  "intraday": ["deallisting", "settleposition", "bankbalances"],
+  "eod": [
+    "position",
+    "deallisting",
+    "settleposition",
+    "bankbalances",
+    "banktransaction",
+    "accountentries",
+    "limitstatus",
+    "pas",
+    "trailbalance",
+    "interestaccrual",
+    "ammortisation"
+  ]
+}

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>returns.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>returns.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h3>RabbitMq Message templete:</h3>
+<p><code>{
+       "Date":"2018-02-01"
+   }</code></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">returns.Src.mongoUnit</span> <span class="kn">as</span> <span class="nn">mu</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span> 
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;rabbit.returns.main&quot;</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">chained_assignment</span> <span class="o">=</span> <span class="bp">None</span>
+
+<span class="nb">dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">calcReturnGroups</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">closingBal</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <h3>Calculate Group Returns</h3>
+<p><strong>Input</strong> : date {Str} AND closingbal {DataFrame}<br />
+<strong>Output</strong> : returnGroup {DataFrame}  </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <ul>
+<li>From the specified date this function gives log Returns for all frequencies on closing balance.</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">dateData</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;1D&#39;</span><span class="p">:</span> <span class="n">closingBal</span><span class="p">[[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">,</span> <span class="s1">&#39;logNetReturns&#39;</span><span class="p">]][:</span><span class="n">date</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;1D&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="s1">&#39;1W&#39;</span><span class="p">:</span> <span class="n">closingBal</span><span class="p">[[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">,</span> <span class="s1">&#39;logNetReturns&#39;</span><span class="p">]][:</span><span class="n">date</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;1W&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="s1">&#39;1FN&#39;</span><span class="p">:</span> <span class="n">closingBal</span><span class="p">[[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">,</span> <span class="s1">&#39;logNetReturns&#39;</span><span class="p">]][:</span><span class="n">date</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;2W&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="s1">&#39;1M&#39;</span><span class="p">:</span> <span class="n">closingBal</span><span class="p">[[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">,</span> <span class="s1">&#39;logNetReturns&#39;</span><span class="p">]][:</span><span class="n">date</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;1M&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="s1">&#39;3M&#39;</span><span class="p">:</span> <span class="n">closingBal</span><span class="p">[[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">,</span> <span class="s1">&#39;logNetReturns&#39;</span><span class="p">]][:</span><span class="n">date</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;3M&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="s1">&#39;6M&#39;</span><span class="p">:</span> <span class="n">closingBal</span><span class="p">[[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">,</span> <span class="s1">&#39;logNetReturns&#39;</span><span class="p">]][:</span><span class="n">date</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;6M&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="s1">&#39;9M&#39;</span><span class="p">:</span> <span class="n">closingBal</span><span class="p">[[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">,</span> <span class="s1">&#39;logNetReturns&#39;</span><span class="p">]][:</span><span class="n">date</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;9M&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="s1">&#39;1Y&#39;</span><span class="p">:</span> <span class="n">closingBal</span><span class="p">[[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">,</span> <span class="s1">&#39;logNetReturns&#39;</span><span class="p">]][:</span><span class="n">date</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;1Y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="s1">&#39;2Y&#39;</span><span class="p">:</span> <span class="n">closingBal</span><span class="p">[[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">,</span> <span class="s1">&#39;logNetReturns&#39;</span><span class="p">]][:</span><span class="n">date</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;2Y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="s1">&#39;3Y&#39;</span><span class="p">:</span> <span class="n">closingBal</span><span class="p">[[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">,</span> <span class="s1">&#39;logNetReturns&#39;</span><span class="p">]][:</span><span class="n">date</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;3Y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="s1">&#39;5Y&#39;</span><span class="p">:</span> <span class="n">closingBal</span><span class="p">[[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">,</span> <span class="s1">&#39;logNetReturns&#39;</span><span class="p">]][:</span><span class="n">date</span><span class="p">]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s1">&#39;5Y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="s1">&#39;INCEPTION&#39;</span><span class="p">:</span> <span class="n">closingBal</span><span class="p">[[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">,</span> <span class="s1">&#39;logNetReturns&#39;</span><span class="p">]][:</span><span class="n">date</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+    <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>restoring index</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">returnGroups</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="p">(</span><span class="n">levels</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">,</span> <span class="s1">&#39;logNetReturns&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;Portfolio&#39;</span><span class="p">,</span> <span class="s1">&#39;Portfolio:Bond&#39;</span><span class="p">,</span> <span class="s1">&#39;Portfolio:Equity&#39;</span><span class="p">]],</span> <span class="n">labels</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]),</span> <span class="n">data</span><span class="o">=</span><span class="n">dateData</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">returnGroups</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">groupAsset</span><span class="p">(</span><span class="n">balSheet</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <h3>Groupby Asset</h3>
+<p><strong>input</strong> : balanceSheet with portfolio and assetclass columns {DataFrame}<br />
+<strong>output</strong> : transformed balance sheet {DataFrame}  </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <ul>
+<li>balance sheet can contain multiple portfolios and asset class,</li>
+<li>this function simplifies the balance sheet</li>
+<li>by combining portfolio and asset into a single column which consists of all possible combination of portfolios and assetclasses.  </li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>GROUPING balance sheet as per portfolio and assetclass
+for portfolio</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">portBalSheet</span> <span class="o">=</span> <span class="n">balSheet</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;DATE&#39;</span><span class="p">,</span> <span class="s1">&#39;GROUP&#39;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;OPERATION&#39;</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;AMOUNT&#39;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>for Assets</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">balSheet</span><span class="p">[</span><span class="s1">&#39;GROUP&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">balSheet</span><span class="p">[</span><span class="s1">&#39;ASSET&#39;</span><span class="p">]</span>
+    <span class="n">portAssetBalSheet</span> <span class="o">=</span> <span class="n">balSheet</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;DATE&#39;</span><span class="p">,</span> <span class="s1">&#39;GROUP&#39;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;OPERATION&#39;</span><span class="p">],</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;AMOUNT&#39;</span><span class="p">)</span>
+    <span class="n">balSheet</span> <span class="o">=</span> <span class="n">portBalSheet</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">portAssetBalSheet</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">balSheet</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">sumXactions</span><span class="p">(</span><span class="n">row</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <h3>Sum of all Transaction operations</h3>
+<p><strong>input</strong> : a single row {Series}<br />
+<strong>output</strong> : a single row {Series}  </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <ul>
+<li>this function is used with apply function</li>
+<li>accepts a single record and sum all Xactions according to specified conditions.</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Portfolio&quot;</span><span class="p">:</span>
+        <span class="n">row</span><span class="p">[</span><span class="s1">&#39;netSumXaction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;Transaction&#39;s Cash In / Out&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">row</span><span class="p">[</span><span class="s1">&#39;grSumXaction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;Transaction&#39;s Cash In / Out&quot;</span><span class="p">,</span> <span class="s2">&quot;Transaction Charges&quot;</span><span class="p">,</span> <span class="s2">&quot;Man Fees&quot;</span><span class="p">,</span> <span class="s2">&quot;Administrator Fee&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">row</span><span class="p">[</span><span class="s1">&#39;grSumXaction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;Cash In/Out&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">row</span><span class="p">[</span><span class="s1">&#39;netSumXaction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s2">&quot;Cash In/Out&quot;</span><span class="p">,</span> <span class="s2">&quot;Transaction Charges&quot;</span><span class="p">,</span> <span class="s2">&quot;Man Fees&quot;</span><span class="p">,</span> <span class="s2">&quot;Administrator Fee&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">row</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">calcPortReturns</span><span class="p">(</span><span class="n">retBalSheet</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p><strong>input</strong> : Balance Sheet {DataFrame}<br />
+<em>cols = [Date, Group, Asset, Operation, Amount]</em><br />
+<strong>output</strong> : closing Balance Sheet {DataFrame}<br />
+<em>cols = [grOpen, netOpen, grClose, netClose, grReturns, netReturns, logGrReturns, logNetReturns]</em>  </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <ul>
+<li>Calculates gross clossing, net closing, gross returns, net returns, log gross returns, log net returns.</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">balSheet</span> <span class="o">=</span> <span class="n">retBalSheet</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">sumXactions</span><span class="p">(</span><span class="n">row</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># balSheet = pivotRetBalSheet.reset_index().set_index(&#39;DATE&#39;)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Initialize closing balance df</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">closingBal</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">balSheet</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="n">closingBal</span> <span class="o">=</span> <span class="n">closingBal</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;grOpen&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">balSheet</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="s2">&quot;netOpen&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">balSheet</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="s2">&quot;grClose&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">balSheet</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="s2">&quot;netClose&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">balSheet</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="s2">&quot;grReturns&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">balSheet</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="s2">&quot;netReturns&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">balSheet</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="s2">&quot;logGrReturns&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">balSheet</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="p">),</span> <span class="s2">&quot;logNetReturns&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">balSheet</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="p">)})</span>
+    <span class="n">closingBal</span> <span class="o">=</span> <span class="n">closingBal</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="s1">&#39;GROUP&#39;</span><span class="p">)</span>
+    <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;grOpen&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100000</span>
+    <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;netOpen&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100000</span>
+
+    <span class="n">balSheet</span> <span class="o">=</span> <span class="n">balSheet</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span>
+    <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;netClose&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;netOpen&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">balSheet</span><span class="p">[</span><span class="s1">&#39;netSumXaction&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;grClose&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;grOpen&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">balSheet</span><span class="p">[</span><span class="s1">&#39;grSumXaction&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;netOpen&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;netClose&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;grOpen&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;grClose&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;netReturns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;netClose&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span>
+    <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;grReturns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;grClose&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span>
+
+    <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;logGrReturns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;grClose&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;logNetReturns&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">closingBal</span><span class="p">[</span><span class="s1">&#39;netClose&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">closingBal</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">date</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>read from Services.
+price = pd.read_csv(&lsquo;excel/output/adjustedPrices.csv&rsquo;)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">retBalSheet</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="s1">&#39;excel/input/returnsBalanceSheet.csv&#39;</span><span class="p">))</span>
+    <span class="n">retBalSheet</span><span class="p">[</span><span class="s1">&#39;DATE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">retBalSheet</span><span class="p">[</span><span class="s1">&#39;DATE&#39;</span><span class="p">],</span> <span class="n">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">-%b-%y&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Save balance Sheet into MONGO</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">mu</span><span class="o">.</span><span class="n">insertData</span><span class="p">(</span><span class="s2">&quot;balanceSheet&quot;</span><span class="p">,</span> <span class="n">retBalSheet</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>Get balance sheet from MONGO</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">retBalSheet</span> <span class="o">=</span> <span class="n">mu</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="s2">&quot;balanceSheet&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Calc and Store closing balance and returns into mongo</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">retBalSheet</span> <span class="o">=</span> <span class="n">groupAsset</span><span class="p">(</span><span class="n">retBalSheet</span><span class="p">)</span>
+    <span class="n">closingBal</span> <span class="o">=</span> <span class="n">calcPortReturns</span><span class="p">(</span><span class="n">retBalSheet</span><span class="p">)</span>
+    <span class="n">unstackClosingBal</span> <span class="o">=</span> <span class="n">closingBal</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;VALUE&quot;</span><span class="p">,</span> <span class="s2">&quot;level_0&quot;</span><span class="p">:</span> <span class="s2">&quot;OPERATION&quot;</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>Save Closing Balance sheet into mongo</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">mu</span><span class="o">.</span><span class="n">insertData</span><span class="p">(</span><span class="s2">&quot;closingBalance&quot;</span><span class="p">,</span> <span class="n">unstackClosingBal</span><span class="p">)</span>
+    <span class="n">unstackClosingBal</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="s1">&#39;excel/output/closingBalance.csv&#39;</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>calculate returns for all frequencies from a date received from rabbitmq.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">returnGroups</span> <span class="o">=</span> <span class="n">calcReturnGroups</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">closingBal</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>need to reset the multilevel index to save inside mongo</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">mu</span><span class="o">.</span><span class="n">insertData</span><span class="p">(</span><span class="s2">&quot;returnGroups&quot;</span><span class="p">,</span> <span class="n">returnGroups</span><span class="o">.</span><span class="n">reset_index</span><span class="p">())</span>
+    <span class="n">returnGroups</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">dir</span><span class="p">,</span> <span class="s1">&#39;excel/output/dateReturns.csv&#39;</span><span class="p">))</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Returns calculated&quot;</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

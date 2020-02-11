@@ -1,0 +1,16 @@
+ipython
+matplotlib
+numpy
+pandas
+pytz
+scipy
+scikit-learn
+seaborn
+empyrical
+nose
+nose-parameterized
+runipy
+pymc3 
+pyfolio
+pymongo
+cx-Oracle

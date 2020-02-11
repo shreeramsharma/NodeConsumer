@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>xformation.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>xformation.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mongoUnit</span> <span class="kn">as</span> <span class="nn">mu</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">caData</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;excel/input/priceData/CA_DATA_11.csv&#39;</span><span class="p">)</span>
+<span class="n">priceJanJune17</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;excel/input/priceData/Price Data Jan to Jun 17.csv&#39;</span><span class="p">)</span>
+<span class="n">priceJulDec17</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;excel/input/priceData/Price Data Jul to Dec 17.csv&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>replace missing dates of BC_TO_DATE &lt;&ndash; BSE_NSE_EX_DATE</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">caData</span> <span class="o">=</span> <span class="n">caData</span><span class="o">.</span><span class="n">fillna</span><span class="p">({</span>
+    <span class="s2">&quot;BC_TO_DATE&quot;</span><span class="p">:</span> <span class="n">caData</span><span class="p">[</span><span class="s2">&quot;BSE_NSE_EX_DATE&quot;</span><span class="p">]</span>
+<span class="p">})</span>
+<span class="n">caData</span><span class="p">[</span><span class="s1">&#39;BC_TO_DATE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">caData</span><span class="p">[</span><span class="s1">&#39;BC_TO_DATE&#39;</span><span class="p">],</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">/%m/%Y&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">xformation</span><span class="p">(</span><span class="n">portfolio</span><span class="p">,</span> <span class="n">price</span><span class="p">):</span>
+    <span class="n">price</span><span class="p">[</span><span class="s1">&#39;ISIN&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">price</span><span class="p">[</span><span class="s1">&#39;ISIN&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">price</span><span class="p">[</span><span class="s1">&#39;MTMDATE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">price</span><span class="p">[</span><span class="s1">&#39;MTMDATE&#39;</span><span class="p">],</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">-%m-%Y&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>getting all dates prices by merge and ffill/bfill</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">dateDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="n">price</span><span class="p">[</span><span class="s1">&#39;MTMDATE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">price</span><span class="p">[</span><span class="s1">&#39;MTMDATE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+
+    <span class="n">distPrice</span> <span class="o">=</span> <span class="n">price</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ISIN&quot;</span><span class="p">,</span> <span class="s2">&quot;MTMDATE&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+    <span class="n">pivotDistPrice</span> <span class="o">=</span> <span class="n">distPrice</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;MTMDATE&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;ISIN&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s2">&quot;MTMPRICE&quot;</span><span class="p">)</span>
+
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">distPrice</span><span class="p">[</span><span class="s1">&#39;ISIN&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span><span class="p">[</span><span class="o">~</span><span class="n">pd</span><span class="o">.</span><span class="n">isna</span><span class="p">(</span><span class="n">cols</span><span class="p">)]</span>
+
+    <span class="n">pivotDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">dateDf</span><span class="p">,</span> <span class="n">pivotDistPrice</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;ffill&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;bfill&#39;</span><span class="p">)</span>
+    <span class="n">pivotDf</span> <span class="o">=</span> <span class="n">pivotDf</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span>
+    <span class="n">pivotDf</span> <span class="o">=</span> <span class="n">pivotDf</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;level_0&#39;</span><span class="p">:</span> <span class="s2">&quot;Date&quot;</span><span class="p">,</span> <span class="s1">&#39;level_1&#39;</span><span class="p">:</span> <span class="s2">&quot;ISIN&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;MTMPRICE&quot;</span><span class="p">})</span>
+
+    <span class="n">distCaData</span> <span class="o">=</span> <span class="n">caData</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ISIN&quot;</span><span class="p">,</span> <span class="s2">&quot;BC_TO_DATE&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+    <span class="n">mergeDF</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">pivotDf</span><span class="p">,</span> <span class="n">distCaData</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ISIN&quot;</span><span class="p">,</span> <span class="s2">&quot;Date&quot;</span><span class="p">],</span> <span class="n">right_on</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ISIN&quot;</span><span class="p">,</span> <span class="s2">&quot;BC_TO_DATE&quot;</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+    <span class="n">mergeDF</span><span class="p">[</span><span class="s1">&#39;OLD_RATIO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mergeDF</span><span class="p">[</span><span class="s1">&#39;OLD_RATIO&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">mergeDF</span><span class="p">[</span><span class="s1">&#39;NEW_RATIO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mergeDF</span><span class="p">[</span><span class="s1">&#39;NEW_RATIO&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">finalDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="n">finalDf</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mergeDF</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span>
+    <span class="n">finalDf</span><span class="p">[</span><span class="s1">&#39;ISIN&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mergeDF</span><span class="p">[</span><span class="s1">&#39;ISIN&#39;</span><span class="p">]</span>
+    <span class="n">finalDf</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mergeDF</span><span class="p">[</span><span class="s1">&#39;MTMPRICE&#39;</span><span class="p">]</span>
+    <span class="n">finalDf</span><span class="p">[</span><span class="s1">&#39;dividend&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mergeDF</span><span class="p">[</span><span class="s1">&#39;DIVIDEND_RATE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">finalDf</span><span class="p">[</span><span class="s1">&#39;split_ratio&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">mergeDF</span><span class="p">[</span><span class="s1">&#39;OLD_RATIO&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">mergeDF</span><span class="p">[</span><span class="s1">&#39;NEW_RATIO&#39;</span><span class="p">])</span>
+    <span class="n">finalDf</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">finalDf</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">rawPrices</span> <span class="o">=</span> <span class="n">finalDf</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;ISIN&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;close&#39;</span><span class="p">)[</span><span class="n">cols</span><span class="p">]</span>
+    <span class="n">dividend</span> <span class="o">=</span> <span class="n">finalDf</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;ISIN&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;dividend&#39;</span><span class="p">)[</span><span class="n">cols</span><span class="p">]</span>
+    <span class="n">splitRatio</span> <span class="o">=</span> <span class="n">finalDf</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;ISIN&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;split_ratio&#39;</span><span class="p">)[</span><span class="n">cols</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">rawPrices</span><span class="p">,</span> <span class="n">dividend</span><span class="p">,</span> <span class="n">splitRatio</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>get all 2017 prices</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">price</span> <span class="o">=</span> <span class="n">priceJanJune17</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">priceJulDec17</span><span class="p">)</span>
+
+<span class="n">r</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">sr</span> <span class="o">=</span> <span class="n">xformation</span><span class="p">(</span><span class="n">caData</span><span class="p">,</span> <span class="n">price</span><span class="p">)</span>
+
+
+<span class="k">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>sys.stdout.flush()</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

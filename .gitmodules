@@ -1,0 +1,3 @@
+[submodule "consumermanager"]
+	path = consumermanager
+	url = https://gitlab.com/mukeshsuthar/consumermanager

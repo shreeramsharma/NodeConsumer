@@ -1,0 +1,14 @@
+node_modules/
+.vscode/
+scrap.json
+Optimised Positions Script.sql
+package-lock.json
+loadTest.py
+templete.js
+server.js
+settings.json
+TODO
+scrapjobs.js
+Logs/
+.env
+config.json

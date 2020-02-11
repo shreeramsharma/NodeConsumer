@@ -1,0 +1,4 @@
+{
+  "exchange": "sysevents",
+  "keys": ["mail.#"]
+}

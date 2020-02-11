@@ -1,0 +1,28 @@
+{
+    "mongo": {
+	"host":"192.168.1.10:27017",
+	"database":"Returns_WealthNFunds"
+    },
+    "oracle": {
+        "oraUser": "STD_IWF_DEV",
+        "oraPassword": "std_iwf_dev",
+        "oraHost": "192.168.1.16",
+       "oraPort": 1521,
+        "oraInstance": "wforcl",
+        "queries": {
+            "dailyRawData": "SELECT * FROM (SELECT DISTINCT * FROM (SELECT asondate, portcode , category, operation2 OPERATION, 0 amount FROM (SELECT * FROM (SELECT DISTINCT calcdate ASONDATE, portcode , '' category, description OPERATION FROM if_twrr_det WHERE Trunc(calcdate) = '{}') data, (SELECT DISTINCT( Replace(Trim(description), '''' , '') ) operation2 FROM if_twrr_config UNION ALL SELECT 'ADMIN FEES' operation2 FROM if_twrr_config)) WHERE operation2 <> operation) UNION ALL SELECT calcdate ASONDATE, portcode , '' category, description OPERATION, Round(Sum(amount), 2) AMOUNT FROM if_twrr_det WHERE Trunc(calcdate) = '{}' GROUP BY calcdate, portcode, description) ORDER BY asondate, portcode, category, operation",
+            "trindex_all": "SELECT index_code,INDEX_DATE,TRINDEX_VALUE FROM trindex",
+            "trindex_daily": "SELECT index_code,INDEX_DATE,TRINDEX_VALUE  FROM trindex where Trunc(INDEX_DATE) = '{}' UNION ALL SELECT BENCHMARKID,BNC_DATE,BID_RATE FROM bnchmrk_value  where trunc(BNC_DATE)='{}'",
+            "nav_daily": "SELECT PORTCODE, to_char(CALCDATE,'dd-mm-yyyy') CALCDATE,CALCVALUE FROM if_nav_calculation WHERE TYPE='NAV' and plancode<>'NONE' and trunc(CALCDATE)= ('{}') order by CALCDATE desc",
+            "nav_all": "SELECT PORTCODE,to_char(CALCDATE,'dd-mm-yyyy') CALCDATE,CALCVALUE FROM if_nav_calculation WHERE TYPE='NAV' and plancode<>'NONE'",
+            "sec_ca_all":"",
+            "sec_ca_daily":"SELECT rbi_symbol ISIN, ASONDATE BC_TO_DATE, OLD_RATIO, NEW_RATIO, DIVIDEND_RATE ,BSE_NSE_EX_DATE FROM ( SELECT SECURITYSYMBOL,NOTICEDATE ASONDATE,'0' OLD_RATIO,'0' NEW_RATIO,AMOUNT DIVIDEND_RATE,exercisedate BSE_NSE_EX_DATE FROM securityevents  WHERE EVENTTYPE='OPTIONS'   AND  EVENTDESCRIPTION LIKE '%DIVID%' UNION ALL SELECT SECURITYSYMBOL,NOTICEDATE,REGEXP_SUBSTR(OUTPUTTYPE, '[^:]+', 1, 1) OLD_RATIO,REGEXP_SUBSTR(OUTPUTTYPE, '[^:]+', 1, 2) OUTPUTTYPE,AMOUNT DIVIDEND_RATE, exercisedate BSE_NSE_EX_DATE FROM securityevents  WHERE EVENTTYPE='OPTIONS'   AND  EVENTDESCRIPTION LIKE '%BONUS%' ) DATA , GLOBAL_SECURITY GS WHERE DATA.securitysymbol=GS.securitysymbol AND Trunc(ASONDATE)=to_date('{}','yyyy-mm-dd')",
+            "sec_price_all":"",
+            "sec_price_daily":"SELECT MTMPRICE,MTMDATE,ISIN FROM if_tempmtmvalues  WHERE Trunc(mtmdate)='{}'",
+            "port_daily":"SELECT PORTCODE, isin_no ISIN,lcy_mtmvalue AMOUNT, asset_class_code ASSETCLASS, SECTOR FROM IF_TWRR_POSITION  WHERE Trunc(asondate)=to_date('{}','yyyy-mm-dd') ",
+            "port_daily_return":"SELECT instrument_code isin,return_value  FROM iwf_return WHERE instrument_type='SECURITIES' AND FREQUENCY='1D' AND Trunc(asondate)='{}'",
+            "port_1D_return":"SELECT asondate ASONDATE, instrument_code ISIN, return_value  FROM iwf_return WHERE instrument_type='PORT-SECURITIES' AND FREQUENCY='1D' AND asondate<to_date('{}','yyyy-mm-dd')",
+            "equity_att":"select * from iwf_return where Trunc(asondate)='{}'"   
+        }
+    }
+}

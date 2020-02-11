@@ -1,0 +1,18 @@
+* save Port and group returns to Oracle <2018-12-26 Wed 13:00>
+* Oracle Database structure
+    - If_groupReturns for groupReturns.
+      * BUG: cx_oracle delete statement hangs -- FIXED
+	+ need to commit the operations to release the lock from a table.
+    - If_portHoldingPercReturns for PortfolioReturns.
+
+* Docker
+* Pre-Requisite docker images
+     - setup mongodb docker image on pc
+       + container_name: quizzical_cocks
+	 - docker run mongo -p 27017:27017
+     - setup rabbitmq docker
+       + container_name: rabbitMq
+	 - docker run rabbitmq --name rabbitMq -p 15672:15672
+
+* run pythonWorker on workPc:
+  - BUG: OracleInstant Client 64bit lib is required to run cx_oracle.

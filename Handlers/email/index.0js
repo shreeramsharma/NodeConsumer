@@ -1,0 +1,34 @@
+let nodemailer = require('nodemailer');
+
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'iwebz.test6@gmail.com',
+        pass: 'donotchange'
+    }
+});
+
+let obj = {
+    queuename: 'email',
+    handler: function (message) {
+
+        let mailOptions = {
+            from: 'iwebz.test6@gmail.com',
+            to: 'mukeshsuthar@protonmail.com',
+            subject: 'TEST - Sending from Nodejs',
+            text: message
+        };
+
+        transporter.sendMail(mailOptions, function (err, info) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+
+        console.log(`message received from ${this.queuename} is ${message.content.toString()}`);
+    }
+};
+
+module.exports = obj;
